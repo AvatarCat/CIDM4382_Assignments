@@ -4,5 +4,5 @@
 2. Assignment 1 -
 
 Documentation for librraies/frameworks used:
-    *Pug
-    *Epress
+*Pug
+*Epress
