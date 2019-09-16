@@ -1,0 +1,33 @@
+/* Went to w3schools to find the details of each css element */
+
+div{
+    margin: auto;
+    width: 300px;
+    float: left;
+}
+
+input[type=text], select {
+    width: 100%;
+    padding: 8px 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: "Times New Roman", 'Times New Roman', Times, serif;
+    font-size: 15px;
+  }
+
+  .button {
+      background-color: rgb(232, 206, 235);
+      border: none;
+      text-align: center;
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 3px;
+      width: 30%;
+  }
+
+  .button:hover{
+      box-shadow: 0 10px 12px 0 rgba(0,0,0,0.24)
+  }
