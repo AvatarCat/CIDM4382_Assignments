@@ -1,0 +1,34 @@
+extends layout
+
+include _includes/sharedHTMLfunctions
+
+block content
+  .row.banner
+    .col-12
+      h1= pageHeader.title
+        small &nbsp;#{pageHeader.strapLine}
+
+  .row
+    .col-12.col-md-8
+      each location in locations
+        .card
+          .card-block
+            h4
+              a(href='/pizzaLocation')= location.name
+
+              if location.rating == 1 || location.rating == 2
+                span.badge.badge-danger= location.rating
+              if location.rating == 3
+                span.badge.badge-warning= location.rating
+              else if location.rating == 5 || location.rating == 4
+                span.badge.badge-success= location.rating
+
+              span.badge.badge-pill.badge-secondary.float-right= location.distance
+            p.address= location.address
+            .facilities
+              each facility in location.facilities
+                span.badge.badge-warning= facility
+
+
+    .col-12.col-md-4
+      p.lead= sidebar
