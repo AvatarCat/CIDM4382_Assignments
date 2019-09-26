@@ -1,6 +1,11 @@
 mixin outputRating(rating)
   small &nbsp;
     - for (let i = 1; i <= rating; i++)
-      i.fas.fa-star
+      if (rating == 4 || rating == 5)
+        i.fas.fa-star.green
+      if (rating == 3)
+        i.fas.fa-star.yellow
+      if (rating == 1 || rating == 2)
+        i.fas.fa-star.red
     - for (let i = rating; i < 5; i++)
       i.far.fa-star

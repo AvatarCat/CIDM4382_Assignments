@@ -14,15 +14,8 @@ block content
         .card
           .card-block
             h4
-              a(href='/pizzaLocation')= location.name
-
-              if location.rating == 1 || location.rating == 2
-                span.badge.badge-danger= location.rating
-              if location.rating == 3
-                span.badge.badge-warning= location.rating
-              else if location.rating == 5 || location.rating == 4
-                span.badge.badge-success= location.rating
-
+              a(href='/location')= location.name
+              +outputRating(location.rating)
               span.badge.badge-pill.badge-secondary.float-right= location.distance
             p.address= location.address
             .facilities

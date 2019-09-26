@@ -37,8 +37,8 @@ const nickname = (req, res) => {
         console.log(req.body.fname + ", the " + randnsyn.toUpperCase());        
 
         res.render('results', { title: "Nickname Results", 
-                                nickname: "Jeffry, the " + randpsyn.toUpperCase() + 
-                                          ", " + randnsyn.toUpperCase() + " Babb"});
+                                nickname: reg.body.fname + randpsyn.toUpperCase() + 
+                                          ", " + randnsyn.toUpperCase() + " " + reg.body.lname});
     })
     .catch((error) => {
         //handle error

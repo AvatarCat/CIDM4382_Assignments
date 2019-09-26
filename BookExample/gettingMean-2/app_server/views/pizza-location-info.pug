@@ -10,14 +10,12 @@ block content
     .col-12.col-lg-9
       .row
         .col-12.col-md-6
+
           p.rating
-            
-            if location.rating == 1 || location.rating == 2
-                span.badge.badge-danger= location.rating
-            if location.rating == 3
-                span.badge.badge-warning= location.rating
-            else if location.rating == 5 || location.rating == 4
-                span.badge.badge-success= location.rating
+
+          h3= location.name
+
+            +outputRating(review.rating)
 
           p= location.address
           .card.card-primary

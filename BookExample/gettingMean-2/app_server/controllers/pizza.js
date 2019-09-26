@@ -10,14 +10,14 @@ const pizzaPlaces = (req, res) => {
           {
             name: 'Dominoes ',
             address: '301 N 23rd St Ste B, Canyon, TX 79015',
-            rating: 5,
+            rating: 3,
             facilities: ['Great Pizza', 'Delivery', 'Wifi'],
             distance: '.5 mi'
           },
           {
             name: 'Pizza Hut ',
             address: '110 23rd St, Canyon, TX 79015',
-            rating: 3,
+            rating: 2,
             facilities: ['Buffet Table', 'Delivery', 'Wifi'],
             distance: '.2 mi'
           },
@@ -73,7 +73,7 @@ const pizzaPlaces = (req, res) => {
             },
             {
               author: 'Charlie Chaplin',
-              rating: 3,
+              rating: 2,
               timestamp: '16 June 2013',
               reviewText: 'It was okay. Coffee wasn\'t great, but the wifi was fast.'
             }

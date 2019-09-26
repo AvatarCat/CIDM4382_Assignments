@@ -105,3 +105,16 @@ body {
   color: #fff;
   background-color: #108a93;
 }
+
+.fa-star.yellow
+{
+  color: yellow;
+}
+.fa-star.green
+{
+  color: lightgreen;
+}
+.fa-star.red
+{
+  color: red;
+}
