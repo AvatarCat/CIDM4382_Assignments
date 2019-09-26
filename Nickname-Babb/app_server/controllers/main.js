@@ -12,32 +12,34 @@ const index = (req, res) => {
 const BHL_KEY = process.env.BHL_KEY;
 
 const nickname = (req, res) => {
-    //console.log(req.body);
+    // console.log(req.body);
     // console.log(req.body.fname);
     // console.log(req.body.lname);
     // console.log(req.body.ptraits);
     // console.log(req.body.ntraits);
 
     let randpsyn = "";
-    let randnsyn = "";
+        // let randnsyn = "";
 
     // https://words.bighugelabs.com/site/api
     axios.all([
         axios.get("https://words.bighugelabs.com/api/2/" + BHL_KEY + "/" + req.body.trait + "/json"),
+            // axios.get("https://words.bighugelabs.com/api/2/" + BHL_KEY + "/" + req.body.ntraits + "/json")
     ]).then((responses) => {
 
         //get response text
-        let synonyms = response.data.adjective.syn;
-        randsyn = synonyms[Math.floor(Math.random() * synonyms.length)];
+        // let synonyms = response.data.adjective.syn;
+        // randsyn = synonyms[Math.floor(Math.random() * synonyms.length)];
         randpsyn = getsyn(responses[0].data.adjective.syn);
         console.log(req.body.fname + ", the " + randpsyn.toUpperCase());
 
-        // randnsyn = getsyn(responses[1].data.adjective.syn);
-        // console.log(req.body.fname + ", the " + randnsyn.toUpperCase());        
+            // randnsyn = getsyn(responses[1].data.adjective.syn);
+            // console.log(req.body.fname + ", the " + randnsyn.toUpperCase());        
 
+        console.log("Works till here");
         res.render('results', { title: "Nickname Results", 
-                                nickname: reg.body.fname + randpsyn.toUpperCase() + 
-                                          ", " + randnsyn.toUpperCase() + " " + reg.body.lname});
+                                nickname: req.body.fname + " the " + randpsyn.toUpperCase() + " " + req.body.lname});
+        console.log("Still Works");
     })
     .catch((error) => {
         //handle error
