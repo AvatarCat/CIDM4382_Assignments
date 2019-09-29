@@ -49,15 +49,15 @@ block content
       div.form-group.col-md-3
         label(for='trait') Trait:
         input#trait.form-control(type="text", placeholder="Type a trait here..." name='trait')
-      //-   label(for='ptraits') Positive Traits:
-      //-   select#ptraits.form-contol(name="ptraits")
-      //-     each trait in positive_traits
-      //-       option= trait
-      //- div.form-group.col-md-3
-      //-   label(for='ntraits') Negative Traits:
-      //-   select#ntraits.form-contol(name="ntraits")
-      //-     each trait in negative_traits
-      //-       option= trait
+            //-   label(for='ptraits') Positive Traits:
+            //-   select#ptraits.form-contol(name="ptraits")
+            //-     each trait in positive_traits
+            //-       option= trait
+            //- div.form-group.col-md-3
+            //-   label(for='ntraits') Negative Traits:
+            //-   select#ntraits.form-contol(name="ntraits")
+            //-     each trait in negative_traits
+            //-       option= trait
       button.btn.btn-outline-primary(type='submit') Submit
       
   if errors

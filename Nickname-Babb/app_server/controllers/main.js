@@ -18,7 +18,7 @@ const nickname = (req, res) => {
     // console.log(req.body.ptraits);
     // console.log(req.body.ntraits);
 
-    let randpsyn = "";
+    let randsim = "";
         // let randnsyn = "";
 
     // https://words.bighugelabs.com/site/api
@@ -28,17 +28,17 @@ const nickname = (req, res) => {
     ]).then((responses) => {
 
         //get response text
-        // let synonyms = response.data.adjective.syn;
-        // randsyn = synonyms[Math.floor(Math.random() * synonyms.length)];
-        randpsyn = getsyn(responses[0].data.adjective.syn);
-        console.log(req.body.fname + ", the " + randpsyn.toUpperCase());
+            // let synonyms = response.data.adjective.syn;
+            // randsyn = synonyms[Math.floor(Math.random() * synonyms.length)];
+        randsim = getsyn(responses[0].data.adjective.sim);
+        console.log(req.body.fname + ", the " + randsim.toUpperCase());
 
             // randnsyn = getsyn(responses[1].data.adjective.syn);
             // console.log(req.body.fname + ", the " + randnsyn.toUpperCase());        
 
         console.log("Works till here");
         res.render('results', { title: "Nickname Results", 
-                                nickname: req.body.fname + " the " + randpsyn.toUpperCase() + " " + req.body.lname});
+                                nickname: req.body.fname + " the " + randsim.toUpperCase() + " " + req.body.lname});
         console.log("Still Works");
     })
     .catch((error) => {
