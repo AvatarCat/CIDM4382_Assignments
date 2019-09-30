@@ -6,3 +6,43 @@ body {
 a {
   color: #00B7FF;
 }
+
+.jumbotron
+{
+  background-color: rgb(231, 179, 179);
+  text-align: center;
+}
+
+.homeButton
+{
+  background-color: #FBBBB9;
+  color: black;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.homeButton:hover
+{
+  background-color: #FFC5C3;
+  text-decoration: none;
+  color: black;
+}
+
+.submitButton
+{
+  background-color: white;
+  color: #A74AC7;
+  padding: 8px;
+  border: 2px solid #A74AC7;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.submitButton:hover
+{
+  background-color: #A74AC7;
+  text-decoration: none;
+  color: white;
+}

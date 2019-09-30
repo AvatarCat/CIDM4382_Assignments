@@ -33,7 +33,7 @@ block content
     div.jumbotron.jumbotron-fluid
       h1= title
       p Welcome to #{title}
-      a(href="http://localhost:3000") Home
+      a.homeButton(href="http://localhost:3000") Home
   
   div.container
     div.row
@@ -58,7 +58,7 @@ block content
             //-   select#ntraits.form-contol(name="ntraits")
             //-     each trait in negative_traits
             //-       option= trait
-      button.btn.btn-outline-primary(type='submit') Submit
+      button.submitButton(type='submit') Submit
       
   if errors
     ul
