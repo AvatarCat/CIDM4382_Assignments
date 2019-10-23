@@ -12,10 +12,9 @@
     "dotenv": "^8.1.0",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "mongoose": "^5.7.5",
+    "mongoose": "^5.7.6",
     "morgan": "~1.9.1",
     "node-cron": "^2.0.3",
-    "nodemon": "^1.19.4",
     "pug": "2.0.0-beta11"
   }
 }

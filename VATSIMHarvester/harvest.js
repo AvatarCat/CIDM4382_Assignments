@@ -1,18 +1,8 @@
-var express = require('express');
-var router = express.Router();
-
 const cron = require('node-cron');
 const axios = require('axios');
-require('dotenv').config()
-var app = module.exports = {};
-const MongoClient = require('mongodb').MongoClient;
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
-    res.render('harvester', { title: 'Results' });
-  });
-  
-
+require('dotenv').config();
+const mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 class Client {
 
@@ -65,21 +55,130 @@ class Client {
         this.QNH_iHg = QNH_iHg;
         this.QNH_Mb = QNH_Mb;
     }
-
 }
 
-const writeClientToPersist = (client) => {
+const clientSchema = new Schema({
+    callsign: String,
+    cid: String,
+    realname: String,
+    clienttype: String,
+    frequency: String,
+    latitude: String,
+    longitude: String,
+    heading: String,
+    altitude: String,
+    groundspeed: String,        
+    /*osition: [{
+        timestamp: Date,
+        frequency: String,
+        latitude: String,
+        longitude: String,
+        heading: String,
+        altitude: String,
+        groundspeed: String,        
+    }], */
+    planned_tascruise: String,
+    planned_depairport: String,
+    planned_altitude: String,
+    planned_destairport: String,
+    server: String,
+    protrevision: String,
+    rating: String,
+    transponder: String,
+    facilitytype: String,
+    visualrange: String,
+    planned_flighttype: String,
+    planned_deptime: String,
+    planned_actdeptime: String,
+    planned_hrsenroute: String,
+    planned_minenroute: String,
+    planned_hrsfuel: String,
+    planned_minfuel: String,
+    planned_altairport: String,
+    planned_remarks: String,
+    planned_route: String,
+    planned_depairport_lat: String,
+    planned_depairport_lon: String,
+    planned_destairport_lat: String,
+    planned_depairport_lon: String,
+    atis_message: String,
+    time_last_atis_received: String,
+    time_logon: String,
+    QNH_iHg: String,
+    QNH_Mb: String,
+});
+
+
+const IsInARTCC = (client) => {
+
+    //use this method for filtering
+}
+
+
+const writeClientModelListToPersist = (client_list) => {
+
+    //const password = process.env.MONGODB_ATLAS_PWD;
+
+    //this example uses ES6 template literals for string interpolation: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
     const uri = process.env.MONGODB_ATLAS_URL;
-    const newClient = new MongoClient(uri, { useNewUrlParser: true });
-    client.connect(err => {
-      const collection = client.db("test").collection("devices");
-      // perform actions on the collection object
-      client.close();
-    });
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
+
+    const Client = mongoose.model('Client', clientSchema);    
+
+    //insert the most recent list - https://mongoosejs.com/docs/api/model.html#model_Model.insertMany
+    Client.insertMany(client_list, (err, docs) => {
+        console.log(`INSERTED: ${client_list.length} records`);
+    })
+
 }
 
+const createClientModel = (client) => {
+    return {
+        callsign: client.client,
+        cid: client.cid,
+        realname: client.realname,
+        clienttype: client.clienttype,
+        frequency: client.frequency,
+        latitude: client.latitude,
+        longitude: client.longitude,
+        altitude: client.altitude,
+        groundspeed: client.groundspeed,
+        planned_aircraft: client.planned_aircraft,
+        planned_tascruise: client.planned_tascruise,
+        planned_depairport: client.planned_depairport,
+        planned_altitude: client.planned_depairport,
+        planned_destairport: client.planned_destairport,
+        server: client.server,
+        protrevision:client.protrevision,
+        rating: client.rating,
+        transponder: client.transponder,
+        facilitytype: client.facilitytype,
+        visualrange: client.visualrange,
+        planned_revision: client.planned_revision,
+        planned_flighttype: client.planned_flighttype,
+        planned_deptime: client.planned_deptime,
+        planned_actdeptime: client.planned_actdeptime,
+        planned_hrsenroute: client.planned_hrsenroute,
+        planned_minenroute: client.planned_minenroute,
+        planned_hrsfuel: client.planned_hrsfuel,
+        planned_minfuel: client.planned_minfuel,
+        planned_altairport: client.planned_altairport,
+        planned_remarks: client.planned_remarks,
+        planned_route: client.planned_route,
+        planned_depairport_lat: client.planned_depairport_lat,
+        planned_depairport_lon: client.planned_depairport_lon,
+        planned_destairport_lat: client.planned_destairport_lat,
+        planned_destairport_lon: client.planned_destairport_lon,
+        atis_message: client.atis_message,
+        time_last_atis_received: client.time_last_atis_received,
+        time_logon: client.time_logon,
+        heading: client.heading,
+        QNH_iHg: client.QNH_iHg,
+        QNH_Mb: client.QNH_Mb,
+    }
+};
 
-const parseCLIENT = (client) => {
+const parseClient = (parts) => {
     // callsign:
     let callsign = parts[0];    
     
@@ -120,36 +219,100 @@ const parseCLIENT = (client) => {
     let planned_altitude = parts[12];
 
     // planned_destairport:
+    let planned_destairport = parts[13];
+
     // server:
+    let server = parts[14];
+
     // protrevision:
+    let protrevision = parts[15];
+
     // rating:
+    let rating = parts[16];
+    
     // transponder:
+    let transponder = parts[17];
+
     // facilitytype:
+    let facilitytype = parts[18];
+
     // visualrange:
+    let visualrange = parts[19];
+
     // planned_revision:
+    let planned_revision = parts[20];
+
     // planned_flighttype:
+    let planned_flighttype = parts[21];
+
     // planned_deptime:
+    let planned_deptime = parts[22];
+
     // planned_actdeptime:
+    let planned_actdeptime = parts[23];
+
     // planned_hrsenroute:
+    let planned_hrsenroute = parts[24];
+
     // planned_minenroute:
+    let planned_minenroute = parts[25];
+
     // planned_hrsfuel:
+    let planned_hrsfuel = parts[26];
+
     // planned_minfuel:
+    let planned_minfuel = parts[27];
+
     // planned_altairport:
+    let planned_altairport = parts[28];
+
     // planned_remarks:
+    let planned_remarks = parts[29];
+
     // planned_route:
+    let planned_route = parts[30];
+
     // planned_depairport_lat:
+    let planned_depairport_lat = parts[31];
+
     // planned_depairport_lon:
+    let planned_depairport_lon = parts[32];
+
     // planned_destairport_lat:
+    let planned_destairport_lat = parts[33];
+
     // planned_destairport_lon:
+    let planned_destairport_lon = parts[34];
+
     // atis_message:
+    let atis_message = parts[35];
+
     // time_last_atis_received:
+    let time_last_atis_received = parts[36];
+
     // time_logon:
+    let time_logon = parts[37];
+
     // heading:
+    let heading = parts[38];
+
     // QNH_iHg:
+    let QNH_iHg = parts[39];
+
     // QNH_Mb:    
+    let QNH_Mb = parts[40];
+
+    return new Client(callsign, cid, realname, clienttype, frequency, latitude, longitude, altitude, groundspeed, planned_tascruise, planned_depairport, planned_altitude, planned_destairport,
+                      server, protrevision, rating, transponder, facilitytype, visualrange, planned_revision, planned_flighttype, planned_deptime, planned_actdeptime, planned_hrsenroute,
+                      planned_minenroute, planned_hrsfuel, planned_minfuel, planned_altairport, planned_remarks, planned_route, planned_depairport_lat, planned_depairport_lon,
+                      planned_destairport_lat, planned_destairport_lon, atis_message, time_last_atis_received, time_logon, heading, QNH_iHg, QNH_Mb);
+
+
 }
 
 const parseVATSIM = (data) => {
+
+    const clientModelList = [];
 
     let start = false;
 
@@ -158,70 +321,42 @@ const parseVATSIM = (data) => {
     lines.forEach(element => {
 
         parts = element.split(':');
-        
-        // callsign:
-        let callsign = parts[0];
 
-        if(callsign.startsWith("!SERVERS")){
+        //call to parseClient here
+        let client = parseClient(parts);
+
+        // callsign:
+        //let callsign = parts[0];
+
+        if(client.callsign.startsWith("!SERVERS")){
             start = false;
         } 
         
-        if(!callsign.startsWith(";") && !callsign.startsWith(" ") && start){
-            console.log(`Callsign: ${callsign}`);
+        if(!client.callsign.startsWith(";") && !client.callsign.startsWith(" ") && start)
+        {
+            switch(client.planned_depairport || client.planned_destairport || client.planned_altairport)
+            {
+                case "KMCO":
+                case "KJAX":
+                case "KCHS":
+                case "KDAB":
+                    clientModelList.push(createClientModel(client));
+                    console.log("Clients: " + client.callsign + "\nPlanned Depariport: " + client.planned_depairport + "\nPlanned Destairport: " + client.planned_destairport + "\nPlanned Altairport: " + client.planned_altairport);
+            }
         } 
 
-        if(callsign.startsWith("!CLIENTS")){
+        if(client.callsign.startsWith("!CLIENTS")){
             start = true;
         }         
-        
-        // cid:
-        // realname:
-        // clienttype:
-        // frequency:
-        // latitude:
-        // longitude:
-        // altitude:
-        // groundspeed:
-        // planned_aircraft:
-        // planned_tascruise:
-        // planned_depairport:
-        // planned_altitude:
-        // planned_destairport:
-        // server:
-        // protrevision:
-        // rating:
-        // transponder:
-        // facilitytype:
-        // visualrange:
-        // planned_revision:
-        // planned_flighttype:
-        // planned_deptime:
-        // planned_actdeptime:
-        // planned_hrsenroute:
-        // planned_minenroute:
-        // planned_hrsfuel:
-        // planned_minfuel:
-        // planned_altairport:
-        // planned_remarks:
-        // planned_route:
-        // planned_depairport_lat:
-        // planned_depairport_lon:
-        // planned_destairport_lat:
-        // planned_destairport_lon:
-        // atis_message:
-        // time_last_atis_received:
-        // time_logon:
-        // heading:
-        // QNH_iHg:
-        // QNH_Mb:
-
+ 
     });
 
-    console.log("DUDE " + new Date().toTimeString());    
+    console.log("WRITING TO DB " + new Date().toTimeString());    
+    writeClientModelListToPersist(clientModelList);
 
 };
 
-app.task = cron.schedule('*/2 * * * *', () => {
+let task = cron.schedule('*/2 * * * *', () => {
 
    axios.get('http://us.data.vatsim.net/vatsim-data.txt')
     .then( (response) => {
@@ -231,5 +366,9 @@ app.task = cron.schedule('*/2 * * * *', () => {
         console.log(error);
     });
 
-});
+    },{
+        scheduled: false
+    }
+);
 
+module.exports = task;

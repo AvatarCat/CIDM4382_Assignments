@@ -6,27 +6,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./app_server/routes/index');
 var usersRouter = require('./app_server/routes/users');
-var vatsimData = require('./harvest');
-
-const mongoose = require('mongoose');
 
 var app = express();
-
-//connect
-const uri = process.env.MONGODB_ATLAS_URL;
-console.log(uri);
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-.catch((err) => {
-  console.log("DUDE, THIS SUCKS: " + err);
-});
-
-//connect to db on start
-const db = mongoose.connection;  
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  // we're connected!
-  console.log("DUDE, YOU'RE GETTING A DELL");
-});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
@@ -56,7 +37,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-vatsimData.task;
 
 module.exports = app;
