@@ -90,6 +90,6 @@ function onListening() {
   debug('Listening on ' + bind);
 
   /* start the cron job */
-  task.start();
+  //task.start();
 
 }
