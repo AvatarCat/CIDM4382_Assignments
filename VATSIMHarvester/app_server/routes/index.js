@@ -1,40 +1,19 @@
 var express = require('express');
 var router = express.Router();
-
-const client = [
-{
-  id: 100,
-  name: "Dude",
-  role: "Pilot"
-},
-{
-  id: 101,
-  name: "Dude2",
-  role: "Pilot"
-}
-]
-
-/*
-howMany
-filter
-offset
-*/
+const ctrlVatsim = require('../controllers/vatsim');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'ZAB Trainer' });
 });
 
-/*GET a single client object */
-
-router.get('/api/one', function(reg, res, next){
-  // what do we do here?
-  res.send(`${client.name} is a ${client.role}`);
+/* doing departures the client-side (Angular) way */
+router.get('/departures', function(req, res, next) {
+  res.render('departures', { title: 'ZAB Depatures' });
 });
 
-router.get('/api/json/one', function(reg, res, next){
-  // what do we do here?
-  res.json(client);
-});
+/* doing arrivals the server-side (Express and Pug) way */
+router.get('/arrivals', ctrlVatsim.vatsimArrivals);
+router.post('/arrivals', ctrlVatsim.vatsimAirportSelection);
 
 module.exports = router;

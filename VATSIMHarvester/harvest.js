@@ -4,7 +4,17 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-class Client {
+require('./app_api/models/vatsim');
+const Client = mongoose.model('Client');
+
+const ZABAirports = [
+    "KMCO", // Orlando International Airport
+    "KJAX", // Jacksonville International Airport
+    "KCHS", // Charleston International Airport
+    "KDAB" //Daytona Beach International Airport
+];
+
+class ParsedClient {
 
     /*
     callsign:cid:realname:clienttype:frequency:latitude:longitude:altitude:groundspeed:groundspeed:planned_tascruise:planned_depairport:planned_altitude:planned_destairport:server:protrevision:rating:transponder:facilitytype:visualrange:planned_revision:planned_flighttype:planned_deptime:planned_actdeptime:planned_hrsenroute:planned_minenroute:planned_hrsfuel:planned_minfuel:planned_altairport:planned_remarks:planned_route:planned_depairport_lat:planned_depairport_lon:planned_destairport_lat:planned_destairport_lon:atis_message:time_last_atis_received:time_logon:heading:QNH_iHg:QNH_Mb:
@@ -57,6 +67,7 @@ class Client {
     }
 }
 
+/*
 const clientSchema = new Schema({
     callsign: String,
     cid: String,
@@ -68,7 +79,7 @@ const clientSchema = new Schema({
     heading: String,
     altitude: String,
     groundspeed: String,        
-    /*osition: [{
+    position: [{
         timestamp: Date,
         frequency: String,
         latitude: String,
@@ -76,7 +87,7 @@ const clientSchema = new Schema({
         heading: String,
         altitude: String,
         groundspeed: String,        
-    }], */
+    }],
     planned_tascruise: String,
     planned_depairport: String,
     planned_altitude: String,
@@ -106,35 +117,48 @@ const clientSchema = new Schema({
     time_logon: String,
     QNH_iHg: String,
     QNH_Mb: String,
-});
-
+});*/
 
 const IsInARTCC = (client) => {
-
+    //list of airpots
+    /*
+    take a client
+    loop through the list and compare to the client:
+        is the origin in the list? then save
+        is the destination in the list? then save
+    */
     //use this method for filtering
-}
 
+    //check to see departure or arrival is in ZAB Class B, C, or D
+    if (ZABAirports.includes(client.planned_depairport) || ZABAirports.includes(client.planned_destairport)){
+        return true;
+    }else{
+        return false;
+    }
+}
 
 const writeClientModelListToPersist = (client_list) => {
 
-    //const password = process.env.MONGODB_ATLAS_PWD;
+    //pull connection string from environment variable
+    const uri = process.env.MONGODB_ATLAS_URL;
 
     //this example uses ES6 template literals for string interpolation: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
-    const uri = process.env.MONGODB_ATLAS_URL;
-    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
-
-    const Client = mongoose.model('Client', clientSchema);    
-
+    mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
+            .catch(err => console.log(err));
+   
     //insert the most recent list - https://mongoosejs.com/docs/api/model.html#model_Model.insertMany
-    Client.insertMany(client_list, (err, docs) => {
-        console.log(`INSERTED: ${client_list.length} records`);
-    })
-
+    var promise = Client.insertMany(client_list, (err, docs) => {
+        if(!err){
+            console.log(`INSERTED: ${client_list.length} records`);
+        }else{
+            console.log(err);
+        }
+    });
 }
 
 const createClientModel = (client) => {
     return {
-        callsign: client.client,
+        callsign: client.callsign,
         cid: client.cid,
         realname: client.realname,
         clienttype: client.clienttype,
@@ -146,7 +170,7 @@ const createClientModel = (client) => {
         planned_aircraft: client.planned_aircraft,
         planned_tascruise: client.planned_tascruise,
         planned_depairport: client.planned_depairport,
-        planned_altitude: client.planned_depairport,
+        planned_altitude: client.planned_altitude,
         planned_destairport: client.planned_destairport,
         server: client.server,
         protrevision:client.protrevision,
@@ -302,12 +326,10 @@ const parseClient = (parts) => {
     // QNH_Mb:    
     let QNH_Mb = parts[40];
 
-    return new Client(callsign, cid, realname, clienttype, frequency, latitude, longitude, altitude, groundspeed, planned_tascruise, planned_depairport, planned_altitude, planned_destairport,
+    return new ParsedClient(callsign, cid, realname, clienttype, frequency, latitude, longitude, altitude, groundspeed, planned_tascruise, planned_depairport, planned_altitude, planned_destairport,
                       server, protrevision, rating, transponder, facilitytype, visualrange, planned_revision, planned_flighttype, planned_deptime, planned_actdeptime, planned_hrsenroute,
                       planned_minenroute, planned_hrsfuel, planned_minfuel, planned_altairport, planned_remarks, planned_route, planned_depairport_lat, planned_depairport_lon,
                       planned_destairport_lat, planned_destairport_lon, atis_message, time_last_atis_received, time_logon, heading, QNH_iHg, QNH_Mb);
-
-
 }
 
 const parseVATSIM = (data) => {
@@ -322,7 +344,7 @@ const parseVATSIM = (data) => {
 
         parts = element.split(':');
 
-        //call to parseClient here
+        // call to parseClient here
         let client = parseClient(parts);
 
         // callsign:
@@ -332,16 +354,12 @@ const parseVATSIM = (data) => {
             start = false;
         } 
         
-        if(!client.callsign.startsWith(";") && !client.callsign.startsWith(" ") && start)
-        {
-            switch(client.planned_depairport || client.planned_destairport || client.planned_altairport)
-            {
-                case "KMCO":
-                case "KJAX":
-                case "KCHS":
-                case "KDAB":
-                    clientModelList.push(createClientModel(client));
-                    console.log("Clients: " + client.callsign + "\nPlanned Depariport: " + client.planned_depairport + "\nPlanned Destairport: " + client.planned_destairport + "\nPlanned Altairport: " + client.planned_altairport);
+        if(!client.callsign.startsWith(";") && !client.callsign.startsWith(" ") && start){
+
+            //do filtering here
+            if(IsInARTCC(client)){
+                //add to list
+                clientModelList.push(createClientModel(client));
             }
         } 
 
@@ -356,7 +374,7 @@ const parseVATSIM = (data) => {
 
 };
 
-let task = cron.schedule('*/2 * * * *', () => {
+const task = cron.schedule('*/2 * * * *', () => {
 
    axios.get('http://us.data.vatsim.net/vatsim-data.txt')
     .then( (response) => {
