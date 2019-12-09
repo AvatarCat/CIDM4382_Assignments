@@ -121,7 +121,7 @@ const clientSchema = new Schema({
 
 const IsInARTCC = (client) => {
     //list of airpots
-    /*
+    /*a
     take a client
     loop through the list and compare to the client:
         is the origin in the list? then save
